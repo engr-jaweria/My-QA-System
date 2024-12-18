@@ -4,7 +4,7 @@ import streamlit as st
 import pdfplumber
 from langchain_text_splitters.character import CharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
@@ -27,7 +27,8 @@ def load_document(file_path):
 
 
 def setup_vectorstore(documents):
-    embeddings = HuggingFaceEmbeddings()
+    # Use HuggingFace transformer embeddings
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     text_splitter = CharacterTextSplitter(
         separator="/n",
         chunk_size=1000,
