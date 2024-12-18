@@ -8,5 +8,4 @@ transformers
 sentence-transformers
 nltk
 unstructured
-HuggingFaceEmbeddings
 pdfplumber
