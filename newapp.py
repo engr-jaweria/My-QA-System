@@ -2,12 +2,13 @@ import os
 from dotenv import load_dotenv
 import streamlit as st
 import pdfplumber
-from langchain_text_splitters.character import CharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
+from langchain.schema import Document
+from langchain_text_splitters.character import CharacterTextSplitter
 
 
 # Load the environment variables
@@ -22,7 +23,9 @@ def load_document(file_path):
         for page in pdf.pages:
             text = page.extract_text()
             if text:
-                documents.append(text)
+                # Wrap the extracted text into a Document object
+                doc = Document(page_content=text, metadata={"source": file_path})
+                documents.append(doc)
     return documents
 
 
@@ -34,7 +37,9 @@ def setup_vectorstore(documents):
         chunk_size=1000,
         chunk_overlap=200
     )
+    # Split documents into chunks
     doc_chunks = text_splitter.split_documents(documents)
+    # Create the vectorstore
     vectorstore = FAISS.from_documents(doc_chunks, embeddings)
     return vectorstore
 
@@ -59,6 +64,7 @@ def create_chain(vectorstore):
         verbose=True
     )
     return chain
+
 
 # Streamlit app setup
 st.set_page_config(
