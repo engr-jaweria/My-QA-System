@@ -7,6 +7,6 @@ faiss-cpu
 transformers
 sentence-transformers
 nltk
-unstructured==0.16.11
+unstructured
 HuggingFaceEmbeddings
 pdfplumber
